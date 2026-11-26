@@ -184,9 +184,19 @@ Player B         Los Angeles (PT)     Jan 10, 3:00 AM – Jan 11, 2:59 AM Jan 11
 
 Player C         Halifax (AT)         Jan 9, 11:00 PM – Jan 10, 10:59 PM Jan 11, 11:00 AM
 
-Game A vs B is final Jan 11 at 3:00 PM ET. Every player got a full 24-hour local day. Your crew is all Eastern except
-one player in Halifax or Vancouver. Either city works the same way, and both change clocks on the same dates as
-Eastern.
+Player D         Vancouver            Jan 10, 2:00 AM – Jan 11, 1:59 AM Jan 11, 2:00 PM
+
+Game A vs B is final Jan 11 at 3:00 PM ET, and Game A vs D at 2:00 PM ET: a game goes final at the later of its two
+locks. Until then it shows Finalizing. Every player got a full 24-hour local day. Your crew is all Eastern except one
+player in Halifax or Vancouver. Either city works the same way: each player's day runs on their own IANA home zone
+(America/Halifax or America/Vancouver), so nothing in the rules changes.
+
+Halifax changes clocks on the same dates as Eastern, so it is always 1 hour ahead of Eastern. Vancouver does not.
+Under current IANA time zone data (tzdata 2026 and later), British Columbia stopped changing clocks after
+March 8, 2026 and stays on the same clock all year. Vancouver no longer shifts with Eastern: it is 2 hours behind
+Eastern in winter (as in the table above, 1 hour ahead of Los Angeles) and 3 hours behind in summer. The app never
+hard-codes these gaps. It always asks the time zone data, so if British Columbia changes its rules again, an updated
+tzdata is the only fix needed.
 
 5. Fantasy rulebook                   What happens
 
@@ -799,6 +809,10 @@ Challenge membership                   Invite-only; no modifiers
 Journey units                          Miles
 Fractional distance in /sync           Round each sample half up to whole metres before
                                        de-duplication (Jay, 2026-11-26)
+Vancouver stopped changing clocks      Follow the IANA zone America/Vancouver as is (2 h behind
+(tzdata 2026)                          Eastern in winter, 3 h in summer). No rule change: days,
+                                       locks and Finalizing already run per home zone (Jay,
+                                       2026-11-26)
 Backups                                Encrypted before leaving Supabase
 Max crew size and playoffs             12; Top 4 for 6–12 players
 First season                           January 2027 (Beta)
@@ -2192,8 +2206,8 @@ P2.5 Locks and finalization (jobs-tick) [PLAN]
   date.
   - Update season_players standings with standings.ts.
   - Idempotent and catch-up: process everything due as of app_now().
-  Function tests with FakeClock: an ET vs Vancouver game goes final at 3:00 PM ET.
-  Halifax locks at 11:00 AM ET. Running the job twice changes nothing. Skipping 3
+  Function tests with FakeClock: an ET vs Vancouver game goes final at 2:00 PM ET in
+  January (3:00 PM ET in July; Vancouver no longer changes clocks, §4). Halifax locks at 11:00 AM ET. Running the job twice changes nothing. Skipping 3
   hours of runs then running once catches up correctly.
 
 Checkpoint P2.5
@@ -2508,23 +2522,23 @@ Time (ET)           What happens
 
 12:00 AM            Jay's Jan 12 starts. His Jan 11 moves to Finalizing.
 
-3:00 AM             Priya's Jan 12 starts (midnight in Vancouver).
+2:00 AM             Priya's Jan 12 starts (midnight in Vancouver, 2 hours behind ET in winter, §4).
 
-8:00 AM / 11:00 AM  "Game day" push to Jay / to Priya (8 AM each).
+8:00 AM / 10:00 AM  "Game day" push to Jay / to Priya (8 AM each).
 All day
                     Every Instagram or Messages open triggers a silent sync. Both phones' Matchup cards
                     update within seconds.
 
 12:00 PM            Jay's Jan 11 locks. Halifax players locked at 11 AM.
 
-3:00 PM             Priya's Jan 11 locks → Jay vs Priya (Jan 11) goes Final, "Final" pushes sent, Crew Games for
+2:00 PM             Priya's Jan 11 locks → Jay vs Priya (Jan 11) goes Final, "Final" pushes sent, Crew Games for
                     Jan 11 computed (Priya was the last player), standings and records update.
 
-8:00 PM / 11:00 PM Tomorrow's modifier (if any) revealed to Jay / Priya.
+8:00 PM / 10:00 PM Tomorrow's modifier (if any) revealed to Jay / Priya.
 
-10:00 PM / 1:00 AM Close-game alert if the margin is under 10.00 (each at 10 PM local).
+10:00 PM / 12:00 AM Close-game alert if the margin is under 10.00 (each at 10 PM local).
 
-11:30 PM / 2:30 AM Sync reminder (11:30 PM local).
+11:30 PM / 1:30 AM Sync reminder (11:30 PM local).
 
 Next day 9 AM local "Yesterday isn't in yet" only for anyone with no sync since midnight.
 
@@ -2541,7 +2555,7 @@ Dec 31, 8 PM / 9 PM ET Rosters lock / schedule and hidden modifier draw publishe
 Jan 1 – 24                   Regular season: 24 head-to-head games and 24 Crew Games each, about 4 modifier
                              days.
 
-Jan 25                       Rest day. Bracket publishes once the last Jan 24 lock passes (3 PM ET with a Vancouver
+Jan 25                       Rest day. Bracket publishes once the last Jan 24 lock passes (2 PM ET with a Vancouver
                              player). Consolation Race starts for the bottom 4.
 
 Jan 26 – 28                  Semifinals (best of 3).

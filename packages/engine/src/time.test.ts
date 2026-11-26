@@ -40,6 +40,12 @@ describe('§4 lock-time example (Jan 10, shown on the Eastern clock)', () => {
       runs: ['Jan 9, 11:00 PM', 'Jan 10, 10:59 PM'],
       locks: 'Jan 11, 11:00 AM',
     },
+    {
+      player: 'D',
+      zone: VANCOUVER,
+      runs: ['Jan 10, 2:00 AM', 'Jan 11, 1:59 AM'],
+      locks: 'Jan 11, 2:00 PM',
+    },
   ] as const;
 
   for (const row of rows) {
@@ -57,6 +63,19 @@ describe('§4 lock-time example (Jan 10, shown on the Eastern clock)', () => {
     const a = lockInstant('2027-01-10', NY);
     const b = lockInstant('2027-01-10', LA);
     expect(eastern(DateTime.max(a, b))).toBe('Jan 11, 3:00 PM');
+  });
+
+  it('Game A vs D is final Jan 11 at 2:00 PM ET', () => {
+    const a = lockInstant('2027-01-10', NY);
+    const d = lockInstant('2027-01-10', VANCOUVER);
+    expect(eastern(DateTime.max(a, d))).toBe('Jan 11, 2:00 PM');
+  });
+
+  it('Vancouver is 2 h behind Eastern in winter and 3 h in summer (§4)', () => {
+    const gap = (date: string) =>
+      dayWindow(date, VANCOUVER).start.diff(dayWindow(date, NY).start, 'hours').hours;
+    expect(gap('2027-01-10')).toBe(2);
+    expect(gap('2027-07-04')).toBe(3);
   });
 
   // tzdata 2026 and later: British Columbia stopped changing clocks after Mar 8 2026 and stays on

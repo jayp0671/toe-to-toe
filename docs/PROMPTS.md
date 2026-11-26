@@ -552,8 +552,8 @@ P2.5 Locks and finalization (jobs-tick) [PLAN]
   date.
   - Update season_players standings with standings.ts.
   - Idempotent and catch-up: process everything due as of app_now().
-  Function tests with FakeClock: an ET vs Vancouver game goes final at 3:00 PM ET.
-  Halifax locks at 11:00 AM ET. Running the job twice changes nothing. Skipping 3
+  Function tests with FakeClock: an ET vs Vancouver game goes final at 2:00 PM ET in
+  January (3:00 PM ET in July; Vancouver no longer changes clocks, §4). Halifax locks at 11:00 AM ET. Running the job twice changes nothing. Skipping 3
   hours of runs then running once catches up correctly.
 
 Checkpoint P2.5
