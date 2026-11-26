@@ -818,6 +818,14 @@ Crew membership values                 role: commissioner | member; status: acti
                                        same user as crews.commissioner_id (the source of truth).
                                        Only active members read crew data; they still see
                                        former players' past days (Jay, 2026-11-26)
+Phase 0 sync report (P0.8)             "Synced by noon" = an accepted sync (sync_log) arrived
+                                       after the home-zone day ended and before its 12:00 PM
+                                       lock. % error = |counted − Health| / Health, within 2%
+                                       inclusive. A day with no Health number counts for the
+                                       sync line and is left out of the error line; a group
+                                       with no measured days fails it. Both lines must pass for
+                                       Watch and phone-only separately. Testers are marked by
+                                       users.dev_note (proposed, 2026-11-26)
 Backups                                Encrypted before leaving Supabase
 Max crew size and playoffs             12; Top 4 for 6–12 players
 First season                           January 2027 (Beta)

@@ -109,6 +109,14 @@ syncTest('good sync: 200 with the A5 body, rows written, last_used_at set', asyn
   assertEquals(key.data?.last_used_at, '2027-01-11T14:00:00+00:00');
 });
 
+syncTest('accepted syncs are logged in sync_log; 429 and 401 are not (P0.8)', async (user) => {
+  assertEquals((await post(user.key, await fixture('watch-and-phone-same-walk.json'))).status, 200);
+  assertEquals((await post(user.key, await fixture('watch-and-phone-same-walk.json'))).status, 429);
+  assertEquals((await post('not-a-key', samples([]))).status, 401);
+  const log = await db.from('sync_log').select('synced_at, dates').eq('user_id', user.id);
+  assertEquals(log.data, [{ synced_at: '2027-01-11T14:00:00+00:00', dates: ['2027-01-10'] }]);
+});
+
 syncTest(
   'days list newest first with live and finalizing, points are steps x 0.01',
   async (user) => {

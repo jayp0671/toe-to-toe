@@ -108,6 +108,35 @@ After that the tester taps **Refresh**, then **Generate sync key**, pastes the k
 and syncs. Their counted steps and last sync time appear on the page. Each morning they type
 yesterday's Health number into **Health says \_\_\_ steps**.
 
+`dev_note` must be exactly `Watch wearer` or `Phone only` (case and a hyphen don't matter). The sync
+report only counts users with one of those two notes, and splits its summary by them. Anyone else,
+such as you testing without a note, is left out.
+
+## 7. The Phase 0 sync report (P0.8)
+
+Put the staging URL and **service role** key (Project Settings → API Keys → `service_role` / secret)
+in the repo-root `.env.local`, never in a committed file:
+
+```sh
+STAGING_SUPABASE_URL=https://<SUPABASE_PROJECT_REF>.supabase.co
+STAGING_SUPABASE_SERVICE_ROLE_KEY=<service role key>
+```
+
+Then, after the testers' 7th day has locked (after noon in the westernmost tester's zone):
+
+```sh
+pnpm sync-report --env staging --days 7
+```
+
+It lists each tester's last 7 locked days (synced by lock, counted vs Health steps with % error,
+sources), a Watch vs phone-only summary, and the two PASS/FAIL lines. The rules are in
+docs/PLAN.md §19. `--env local` reads the local stack (seeded with a week of history), and
+`--now <ISO instant>` reports as of another moment. The key is only sent as a request header; the
+report never prints it.
+
+Each accepted sync is logged in `public.sync_log` (server-only), which is how the report knows when
+a sync arrived for each day. `sync_keys.last_used_at` keeps only the latest one.
+
 ## Local equivalent
 
 ```sh

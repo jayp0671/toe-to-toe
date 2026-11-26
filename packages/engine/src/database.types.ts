@@ -203,6 +203,26 @@ isOneToOne: true
       referencedColumns: ["id"]
     }
                   ]
+                },"sync_log": {
+                  Row: {
+                    "dates": (string)[],"id": number,"synced_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "dates"?: (string)[],"id"?: never,"synced_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "dates"?: (string)[],"id"?: never,"synced_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "sync_log_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "users"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"users": {
                   Row: {
                     "avatar_url": string | null,"created_at": string,"default_tz": string,"dev_note": string | null,"display_name": string,"email": string,"id": string,"username": string

@@ -103,3 +103,51 @@ cross join lateral (
 
 update public.sync_keys set last_used_at = now() - interval '20 minutes'
 where user_id = '00000000-0000-4000-8000-000000000001';
+
+-- Phase 0 sync-report history (P0.8): the 7 days before yesterday as locked days, plus a sync log and
+-- "Health says" numbers for yesterday and those 7 days, so `pnpm sync-report --env local --days 7`
+-- has a week to read. Every player syncs at 8:15 AM local the morning after each day, except Rohan,
+-- whose sync for 3 days ago came at 2:00 PM (after the lock). Health numbers sit within 1% of the
+-- counted total, except Sam 4 days ago (3% off). Nisha didn't enter a number 2 and 5 days ago.
+insert into public.daily_stats (user_id, local_date, home_tz, steps, sources, status, locked_at)
+select
+  u.id,
+  (now() at time zone u.default_tz)::date - o,
+  u.default_tz,
+  7000 + 523 * n + 97 * o,
+  case when u.dev_note = 'Watch wearer'
+    then array[u.display_name || '''s Apple Watch', u.display_name || '''s iPhone']
+    else array[u.display_name || '''s iPhone'] end,
+  'locked',
+  private.lock_instant((now() at time zone u.default_tz)::date - o, u.default_tz)
+from generate_series(1, 9) n
+join public.users u on u.id = ('00000000-0000-4000-8000-' || lpad(n::text, 12, '0'))::uuid
+cross join generate_series(2, 8) o;
+
+insert into public.sync_log (user_id, synced_at, dates)
+select s.user_id, s.synced_at, array[s.local_date]
+from (
+  select
+    d.user_id, d.local_date,
+    private.lock_instant(d.local_date, d.home_tz)
+      + case when d.user_id = '00000000-0000-4000-8000-000000000007'
+               and d.local_date = (now() at time zone d.home_tz)::date - 3
+          then interval '2 hours' else interval '-3 hours -45 minutes' end as synced_at
+  from public.daily_stats d
+  where d.local_date < (now() at time zone d.home_tz)::date
+) s
+where s.synced_at <= now()
+union all
+select '00000000-0000-4000-8000-000000000001', now() - interval '20 minutes', '{}';
+
+insert into public.phase0_checks (user_id, local_date, health_steps)
+select
+  d.user_id, d.local_date,
+  case when d.user_id = '00000000-0000-4000-8000-000000000003'
+         and d.local_date = (now() at time zone d.home_tz)::date - 4
+    then d.steps * 100 / 97
+    else d.steps + d.steps * ((extract(day from d.local_date)::int % 5) - 2) / 200 end
+from public.daily_stats d
+where d.local_date < (now() at time zone d.home_tz)::date
+  and not (d.user_id = '00000000-0000-4000-8000-000000000006'
+           and d.local_date in ((now() at time zone d.home_tz)::date - 2, (now() at time zone d.home_tz)::date - 5));

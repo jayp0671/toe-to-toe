@@ -43,3 +43,24 @@ export {
   type SyncPlan,
 } from './sync.ts';
 export * from './schemas/index.ts';
+export {
+  ERROR_TARGET_PERCENT,
+  ERROR_TOLERANCE_PERCENT,
+  evaluateDay,
+  formatPercentError,
+  GROUP_LABELS,
+  percentError,
+  reportDates,
+  summarize,
+  SYNC_TARGET_PERCENT,
+  syncedByLock,
+  testerGroup,
+  withinTolerance,
+  type DayError,
+  type DayInput,
+  type EvaluatedDay,
+  type GroupSummary,
+  type Summary,
+  type TesterGroup,
+  type Verdict,
+} from './sync-report.ts';
