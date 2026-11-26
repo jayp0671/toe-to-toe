@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPoints } from './format';
+import { formatPoints } from './format.ts';
 
 describe('formatPoints', () => {
   it('shows two decimals', () => {

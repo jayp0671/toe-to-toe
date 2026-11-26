@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { localDateOf, splitIntervalByLocalDay, toInstant, type LocalDate } from './time';
+import { localDateOf, splitIntervalByLocalDay, toInstant, type LocalDate } from './time.ts';
 
 /**
  * De-duplication of Health samples (docs/PLAN.md §12.2, Appendix A3 layer 4, A5).

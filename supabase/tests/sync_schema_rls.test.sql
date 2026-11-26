@@ -231,7 +231,8 @@ select lives_ok($$ insert into public.hours (user_id, hour_start_utc, steps)
 select lives_ok($$ update public.daily_stats set status = 'locked', locked_at = public.app_now()
   where user_id = '00000000-0000-4000-a000-00000000000a' $$,
   'the service role can lock a day');
-select is((select count(*)::int from public.sync_keys), 2, 'the service role can read sync keys');
+select is((select count(*)::int from public.sync_keys where user_id::text like '00000000-0000-4000-a000-%'), 2,
+  'the service role can read sync keys');
 
 -- ---------------------------------------------------------------- results of the client attempts
 reset role;

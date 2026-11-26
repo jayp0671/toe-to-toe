@@ -1,5 +1,5 @@
 import { DateTime, Duration, type DurationLike } from 'luxon';
-import { toInstant } from './time';
+import { toInstant } from './time.ts';
 
 /**
  * The only source of "now" (CLAUDE.md golden rule 2, docs/PLAN.md Appendix A8).

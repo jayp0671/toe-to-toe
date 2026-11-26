@@ -205,6 +205,17 @@ isOneToOne: true
           Functions: {
             "app_now":
 { Args: Record<PropertyKey, never>; Returns: string
+                           },
+"sync_apply":
+{ Args: { "p_days": Json,"p_home_tz": string,"p_hours": Json,"p_source_hours": Json,"p_user_id": string }; Returns: Json
+                           },
+"sync_auth":
+{ Args: { "p_key_hash": string }; Returns: {
+              "home_tz": string,"rate_limited": boolean,"server_now": string,"user_id": string
+            }[]
+                           },
+"sync_key_rotate":
+{ Args: { "p_key_hash": string,"p_user_id": string }; Returns: undefined
                            }
           }
           Enums: {

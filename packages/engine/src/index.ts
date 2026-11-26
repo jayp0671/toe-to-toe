@@ -1,5 +1,5 @@
-export { formatPoints } from './format';
-export { FakeClock, systemClock, type Clock } from './clock';
+export { formatPoints } from './format.ts';
+export { FakeClock, systemClock, type Clock } from './clock.ts';
 export {
   dayWindow,
   isLocked,
@@ -12,7 +12,7 @@ export {
   type InstantInput,
   type LocalDate,
   type Span,
-} from './time';
+} from './time.ts';
 export {
   dailyTotals,
   dedup,
@@ -27,4 +27,19 @@ export {
   type Sample,
   type SourceHourTotals,
   type Totals,
-} from './dedup';
+} from './dedup.ts';
+export {
+  dayStatus,
+  mergeHours,
+  planSync,
+  screenSync,
+  sourcesByDate,
+  stubPointsHundredths,
+  type DatedHour,
+  type DatedSourceHour,
+  type DayStatus,
+  type ScreenedSync,
+  type SyncIgnored,
+  type SyncPlan,
+} from './sync.ts';
+export * from './schemas/index.ts';

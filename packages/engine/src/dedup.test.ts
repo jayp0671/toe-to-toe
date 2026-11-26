@@ -10,7 +10,7 @@ import {
   type HourSample,
   type Metric,
   type Sample,
-} from './dedup';
+} from './dedup.ts';
 
 import crossesMidnight from '../../../tests/fixtures/crosses-midnight.json';
 import dstSpringDay from '../../../tests/fixtures/dst-spring-day.json';

@@ -449,6 +449,13 @@
     },
   },
 
+  // Edge Functions. /sync authenticates with the player's sync key (a Bearer token that is not a
+  // Supabase JWT), so the gateway's JWT check is off for it; the function checks the key itself.
+  // /api checks the signed-in user's JWT itself too, but keeps the gateway check on.
+  "functions": {
+    "sync": { "verify_jwt": false },
+  },
+
   "edge_runtime": {
     "enabled": true,
     // Supported request policies: `oneshot`, `per_worker`.

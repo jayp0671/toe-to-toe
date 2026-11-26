@@ -67,3 +67,10 @@ with crew as (
 )
 insert into public.crew_members (crew_id, user_id, role)
 select crew.id, '00000000-0000-4000-8000-000000000010', 'commissioner' from crew;
+
+-- Dev-only sync key for Jay, for curl checks against the local /sync (P0.5 checkpoint):
+--   Authorization: Bearer local-dev-sync-key-jay
+-- LOCAL ONLY. This seed never runs against staging or prod, and real keys come from
+-- POST /api/sync-key/rotate (only their SHA-256 is stored).
+insert into public.sync_keys (user_id, key_hash) values
+  ('00000000-0000-4000-8000-000000000001', encode(extensions.digest('local-dev-sync-key-jay', 'sha256'), 'hex'));

@@ -7,7 +7,7 @@ import {
   lockInstant,
   minutesOf,
   splitIntervalByLocalDay,
-} from './time';
+} from './time.ts';
 
 const NY = 'America/New_York';
 const LA = 'America/Los_Angeles';

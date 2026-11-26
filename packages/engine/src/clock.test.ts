@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FakeClock, systemClock } from './clock';
+import { FakeClock, systemClock } from './clock.ts';
 
 describe('systemClock', () => {
   it('returns a valid UTC instant', () => {
