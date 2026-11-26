@@ -797,6 +797,8 @@ Social features                        Reactions, trash talk, nudges in V1. Widg
 Stakes                                 No money in the app; trophies and badges
 Challenge membership                   Invite-only; no modifiers
 Journey units                          Miles
+Fractional distance in /sync           Round each sample half up to whole metres before
+                                       de-duplication (Jay, 2026-11-26)
 Backups                                Encrypted before leaving Supabase
 Max crew size and playoffs             12; Top 4 for 6–12 players
 First season                           January 2027 (Beta)

@@ -1,0 +1,68 @@
+{
+  "v": 1,
+  "kind": "samples",
+  "sent_at": "2027-01-11T09:00:00+05:30",
+  "device_tz": "Asia/Kolkata",
+  "shortcut_version": "1.0",
+  "metrics": {
+    "steps": [
+      {
+        "s": "2027-01-10T09:00:00+05:30",
+        "e": "2027-01-10T09:30:00+05:30",
+        "n": 2400,
+        "src": "Priya's iPhone"
+      },
+      {
+        "s": "2027-01-10T23:20:00+05:30",
+        "e": "2027-01-11T00:20:00+05:30",
+        "n": 6000,
+        "src": "Priya's iPhone"
+      }
+    ],
+    "flights": [],
+    "distance_m": []
+  },
+  "fixture": {
+    "description": "Kolkata midnight is 18:30 UTC, inside the 18:00Z hour. Hours are stored in UTC, so that hour (5000 steps) is split evenly by minute: 2510 to Jan 10 (30 x 83 + 20 leftover) and 2490 to Jan 11.",
+    "home_tz": "Asia/Kolkata",
+    "expected": {
+      "ignored": {
+        "manual": 0
+      },
+      "days": [
+        {
+          "date": "2027-01-10",
+          "steps": 5910,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "date": "2027-01-11",
+          "steps": 2490,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ],
+      "hours": [
+        {
+          "hourStartUtc": "2027-01-10T03:00:00Z",
+          "steps": 2400,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-01-10T17:00:00Z",
+          "steps": 1000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-01-10T18:00:00Z",
+          "steps": 5000,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ]
+    }
+  }
+}

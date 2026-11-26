@@ -1,0 +1,111 @@
+{
+  "v": 1,
+  "kind": "samples",
+  "sent_at": "2027-01-11T09:00:00-05:00",
+  "device_tz": "America/New_York",
+  "shortcut_version": "1.0",
+  "metrics": {
+    "steps": [
+      {
+        "s": "2027-01-10T08:00:00-05:00",
+        "e": "2027-01-10T08:10:00-05:00",
+        "n": 1200,
+        "src": "Jay's Apple Watch"
+      },
+      {
+        "s": "2027-01-10T08:05:00-05:00",
+        "e": "2027-01-10T08:15:00-05:00",
+        "n": 1000,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-01-10T12:00:00-05:00",
+        "e": "2027-01-10T12:05:00-05:00",
+        "n": 300,
+        "src": "Jay's Apple Watch"
+      }
+    ],
+    "flights": [
+      {
+        "s": "2027-01-10T08:00:00-05:00",
+        "e": "2027-01-10T08:10:00-05:00",
+        "n": 3,
+        "src": "Jay's Apple Watch"
+      },
+      {
+        "s": "2027-01-10T08:00:00-05:00",
+        "e": "2027-01-10T08:10:00-05:00",
+        "n": 2,
+        "src": "Jay's iPhone"
+      }
+    ],
+    "distance_m": [
+      {
+        "s": "2027-01-10T08:00:00-05:00",
+        "e": "2027-01-10T08:10:00-05:00",
+        "n": 640.5,
+        "src": "Jay's Apple Watch"
+      },
+      {
+        "s": "2027-01-10T08:05:00-05:00",
+        "e": "2027-01-10T08:15:00-05:00",
+        "n": 700.4,
+        "src": "Jay's iPhone"
+      }
+    ]
+  },
+  "fixture": {
+    "description": "Watch and iPhone record overlapping parts of the same walk. Each minute keeps the larger source, so the overlap counts once. Distance 640.5 rounds to 641 m and 700.4 to 700 m before spreading.",
+    "home_tz": "America/New_York",
+    "expected": {
+      "ignored": {
+        "manual": 0
+      },
+      "days": [
+        {
+          "date": "2027-01-10",
+          "steps": 2000,
+          "flights": 3,
+          "distance_m": 1021
+        }
+      ],
+      "hours": [
+        {
+          "hourStartUtc": "2027-01-10T13:00:00Z",
+          "steps": 1700,
+          "flights": 3,
+          "distance_m": 1021
+        },
+        {
+          "hourStartUtc": "2027-01-10T17:00:00Z",
+          "steps": 300,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ],
+      "sourceHours": [
+        {
+          "hourStartUtc": "2027-01-10T13:00:00Z",
+          "sourceName": "Jay's Apple Watch",
+          "steps": 1200,
+          "flights": 3,
+          "distance_m": 641
+        },
+        {
+          "hourStartUtc": "2027-01-10T13:00:00Z",
+          "sourceName": "Jay's iPhone",
+          "steps": 1000,
+          "flights": 2,
+          "distance_m": 700
+        },
+        {
+          "hourStartUtc": "2027-01-10T17:00:00Z",
+          "sourceName": "Jay's Apple Watch",
+          "steps": 300,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ]
+    }
+  }
+}

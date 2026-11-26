@@ -1,0 +1,104 @@
+{
+  "v": 1,
+  "kind": "samples",
+  "sent_at": "2027-03-15T09:00:00-04:00",
+  "device_tz": "America/New_York",
+  "shortcut_version": "1.0",
+  "metrics": {
+    "steps": [
+      {
+        "s": "2027-03-13T23:55:00-05:00",
+        "e": "2027-03-14T00:05:00-05:00",
+        "n": 1000,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-03-14T01:50:00-05:00",
+        "e": "2027-03-14T03:10:00-04:00",
+        "n": 2000,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-03-14T23:30:00-04:00",
+        "e": "2027-03-14T23:40:00-04:00",
+        "n": 1000,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-03-15T00:05:00-04:00",
+        "e": "2027-03-15T00:10:00-04:00",
+        "n": 500,
+        "src": "Jay's iPhone"
+      }
+    ],
+    "flights": [],
+    "distance_m": []
+  },
+  "fixture": {
+    "description": "Mar 14 2027 is a 23-hour day in New York (2:00 AM EST jumps to 3:00 AM EDT). The walk from 1:50 AM EST to 3:10 AM EDT is 20 real minutes.",
+    "home_tz": "America/New_York",
+    "expected": {
+      "ignored": {
+        "manual": 0
+      },
+      "days": [
+        {
+          "date": "2027-03-13",
+          "steps": 500,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "date": "2027-03-14",
+          "steps": 3500,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "date": "2027-03-15",
+          "steps": 500,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ],
+      "hours": [
+        {
+          "hourStartUtc": "2027-03-14T04:00:00Z",
+          "steps": 500,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-03-14T05:00:00Z",
+          "steps": 500,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-03-14T06:00:00Z",
+          "steps": 1000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-03-14T07:00:00Z",
+          "steps": 1000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-03-15T03:00:00Z",
+          "steps": 1000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-03-15T04:00:00Z",
+          "steps": 500,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ]
+    }
+  }
+}

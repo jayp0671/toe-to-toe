@@ -1,0 +1,68 @@
+{
+  "v": 1,
+  "kind": "samples",
+  "sent_at": "2027-01-11T09:00:00-05:00",
+  "device_tz": "America/New_York",
+  "shortcut_version": "1.0",
+  "metrics": {
+    "steps": [
+      {
+        "s": "2027-01-10T07:30:00-05:00",
+        "e": "2027-01-10T07:45:00-05:00",
+        "n": 1500,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-01-10T12:10:00-05:00",
+        "e": "2027-01-10T12:20:30-05:00",
+        "n": 1100,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-01-10T18:00:00-05:00",
+        "e": "2027-01-10T18:59:00-05:00",
+        "n": 3001,
+        "src": "Jay's iPhone"
+      }
+    ],
+    "flights": [
+      {
+        "s": "2027-01-10T07:30:00-05:00",
+        "e": "2027-01-10T07:45:00-05:00",
+        "n": 1,
+        "src": "Jay's iPhone"
+      }
+    ],
+    "distance_m": [
+      {
+        "s": "2027-01-10T07:30:00-05:00",
+        "e": "2027-01-10T07:45:00-05:00",
+        "n": 1150,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-01-10T18:00:00-05:00",
+        "e": "2027-01-10T18:59:00-05:00",
+        "n": 2300,
+        "src": "Jay's iPhone"
+      }
+    ]
+  },
+  "fixture": {
+    "description": "Only an iPhone, with samples that do not end on a minute boundary (12:10:00-12:20:30 covers 11 minutes).",
+    "home_tz": "America/New_York",
+    "expected": {
+      "ignored": {
+        "manual": 0
+      },
+      "days": [
+        {
+          "date": "2027-01-10",
+          "steps": 5601,
+          "flights": 1,
+          "distance_m": 3450
+        }
+      ]
+    }
+  }
+}

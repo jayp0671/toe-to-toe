@@ -1,0 +1,86 @@
+{
+  "v": 1,
+  "kind": "samples",
+  "sent_at": "2027-01-11T09:00:00-05:00",
+  "device_tz": "America/New_York",
+  "shortcut_version": "1.0",
+  "metrics": {
+    "steps": [
+      {
+        "s": "2027-01-10T06:00:00-05:00",
+        "e": "2027-01-10T10:00:00-05:00",
+        "n": 24000,
+        "src": "Jay's Apple Watch"
+      },
+      {
+        "s": "2027-01-10T06:00:00-05:00",
+        "e": "2027-01-10T10:00:00-05:00",
+        "n": 22000,
+        "src": "Jay's iPhone"
+      },
+      {
+        "s": "2027-01-10T16:00:00-05:00",
+        "e": "2027-01-10T18:00:00-05:00",
+        "n": 16500,
+        "src": "Jay's Apple Watch"
+      }
+    ],
+    "flights": [],
+    "distance_m": []
+  },
+  "fixture": {
+    "description": "A 40,500-step day with Watch and iPhone overlapping all morning. The evening 16,500 over 120 minutes is 137 r60, so 21:00Z gets 8280 and 22:00Z 8220. Flagging comes in a later prompt.",
+    "home_tz": "America/New_York",
+    "expected": {
+      "ignored": {
+        "manual": 0
+      },
+      "days": [
+        {
+          "date": "2027-01-10",
+          "steps": 40500,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ],
+      "hours": [
+        {
+          "hourStartUtc": "2027-01-10T11:00:00Z",
+          "steps": 6000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-01-10T12:00:00Z",
+          "steps": 6000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-01-10T13:00:00Z",
+          "steps": 6000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-01-10T14:00:00Z",
+          "steps": 6000,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-01-10T21:00:00Z",
+          "steps": 8280,
+          "flights": 0,
+          "distance_m": 0
+        },
+        {
+          "hourStartUtc": "2027-01-10T22:00:00Z",
+          "steps": 8220,
+          "flights": 0,
+          "distance_m": 0
+        }
+      ]
+    }
+  }
+}
