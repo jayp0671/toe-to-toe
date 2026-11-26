@@ -46,16 +46,24 @@ identity_rows as (
 insert into public.users (id, email, display_name, username, default_tz, dev_note)
 select id, email, name, username, tz, note from seeded;
 
-insert into public.crews (id, name, invite_code, commissioner_id) values
-  ('00000000-0000-4000-9000-000000000001', 'Local Crew', 'LOCAL1', '00000000-0000-4000-8000-000000000001'),
-  ('00000000-0000-4000-9000-000000000002', 'Smoke Crew', 'SMOKE1', '00000000-0000-4000-8000-000000000010');
-
+-- One statement per crew: crews.commissioner_id and the commissioner's crew_members row are checked
+-- together at commit (migration 20261126040000), so they go in together.
+with crew as (
+  insert into public.crews (id, name, invite_code, commissioner_id) values
+    ('00000000-0000-4000-9000-000000000001', 'Local Crew', 'LOCAL1', '00000000-0000-4000-8000-000000000001')
+  returning id
+)
 insert into public.crew_members (crew_id, user_id, role)
 select
-  '00000000-0000-4000-9000-000000000001',
+  crew.id,
   ('00000000-0000-4000-8000-' || lpad(n::text, 12, '0'))::uuid,
   case when n = 1 then 'commissioner' else 'member' end
-from generate_series(1, 9) n;
+from crew, generate_series(1, 9) n;
 
-insert into public.crew_members (crew_id, user_id, role) values
-  ('00000000-0000-4000-9000-000000000002', '00000000-0000-4000-8000-000000000010', 'commissioner');
+with crew as (
+  insert into public.crews (id, name, invite_code, commissioner_id) values
+    ('00000000-0000-4000-9000-000000000002', 'Smoke Crew', 'SMOKE1', '00000000-0000-4000-8000-000000000010')
+  returning id
+)
+insert into public.crew_members (crew_id, user_id, role)
+select crew.id, '00000000-0000-4000-8000-000000000010', 'commissioner' from crew;

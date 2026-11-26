@@ -813,6 +813,11 @@ Vancouver stopped changing clocks      Follow the IANA zone America/Vancouver as
 (tzdata 2026)                          Eastern in winter, 3 h in summer). No rule change: days,
                                        locks and Finalizing already run per home zone (Jay,
                                        2026-11-26)
+Crew membership values                 role: commissioner | member; status: active | left |
+                                       removed. One active commissioner per crew, always the
+                                       same user as crews.commissioner_id (the source of truth).
+                                       Only active members read crew data; they still see
+                                       former players' past days (Jay, 2026-11-26)
 Backups                                Encrypted before leaving Supabase
 Max crew size and playoffs             12; Top 4 for 6–12 players
 First season                           January 2027 (Beta)
