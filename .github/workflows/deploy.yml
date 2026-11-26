@@ -1,0 +1,104 @@
+# Deploys (docs/PLAN.md Appendix A4, A9, A12). Setup steps for Jay: docs/STAGING.md.
+#   Push to main -> staging: migrations (supabase db push) -> Edge Functions -> web app to the
+#   Cloudflare Pages "staging" branch alias (a preview deployment).
+# Production (tag v*.*.*) and the smoke test after each deploy arrive with P1.7.
+#
+# Every value comes from the GitHub "staging" environment: secrets for the private ones, variables
+# for the public ones. Until they all exist the deploy is skipped with a notice instead of failing.
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One staging deploy at a time; a newer push waits rather than cancelling a half-applied deploy.
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    environment: staging
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          missing=()
+          for name in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD CLOUDFLARE_API_TOKEN \
+            SUPABASE_PROJECT_REF SUPABASE_ANON_KEY CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_PAGES_PROJECT; do
+            if [ -z "${!name}" ]; then missing+=("$name"); fi
+          done
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::notice title=Staging deploy skipped::Missing in the GitHub 'staging' environment: ${missing[*]}. See docs/STAGING.md."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy-staging:
+    needs: preflight
+    if: needs.preflight.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: staging
+      url: ${{ steps.pages.outputs.url }}
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: supabase/setup-cli@v3
+        with:
+          version: 3.4.0
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply migrations to t2t-staging
+        run: supabase db push --remote="$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD" --yes
+
+      # Uses supabase/config.jsonc for per-function settings (sync has verify_jwt off: the sync key
+      # is not a JWT). SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by the platform.
+      - name: Deploy Edge Functions
+        run: supabase functions deploy --remote="$SUPABASE_PROJECT_REF" --yes
+
+      - name: Build web app
+        env:
+          VITE_SUPABASE_URL: https://${{ vars.SUPABASE_PROJECT_REF }}.supabase.co
+          VITE_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: pnpm build
+
+      # Deploying to a non-production branch name gives the stable preview alias
+      # https://staging.<project>.pages.dev. Production (branch main) is reserved for tags (P1.7).
+      - name: Deploy web app to Cloudflare Pages (staging)
+        id: pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          npx --yes wrangler@4.168.0 pages deploy apps/web/dist \
+            --project-name="$CLOUDFLARE_PAGES_PROJECT" --branch=staging \
+            --commit-hash="$GITHUB_SHA" --commit-dirty=true
+          echo "url=https://staging.${CLOUDFLARE_PAGES_PROJECT}.pages.dev" >> "$GITHUB_OUTPUT"

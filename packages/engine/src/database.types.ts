@@ -143,6 +143,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"phase0_checks": {
+                  Row: {
+                    "entered_at": string,"health_steps": number,"local_date": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "entered_at"?: string,"health_steps": number,"local_date": string,"user_id"?: string
+                  }
+                  Update: {
+                    "entered_at"?: string,"health_steps"?: number,"local_date"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "phase0_checks_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "users"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"source_hours": {
                   Row: {
                     "distance_m": number,"flights": number,"hour_start_utc": string,"source_name": string,"steps": number,"user_id": string
@@ -205,6 +225,11 @@ isOneToOne: true
           Functions: {
             "app_now":
 { Args: Record<PropertyKey, never>; Returns: string
+                           },
+"my_sync_status":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "home_tz": string,"last_sync_at": string,"today": string,"yesterday": string
+            }[]
                            },
 "sync_apply":
 { Args: { "p_days": Json,"p_home_tz": string,"p_hours": Json,"p_source_hours": Json,"p_user_id": string }; Returns: Json

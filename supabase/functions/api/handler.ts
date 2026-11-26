@@ -5,7 +5,7 @@
  *                              Returns the plaintext key once; only its SHA-256 is stored (A9).
  */
 import type { Db } from '../_shared/db.ts';
-import { bearerToken, fail, json, sha256Hex } from '../_shared/http.ts';
+import { CORS_HEADERS, bearerToken, fail, json, sha256Hex, withCors } from '../_shared/http.ts';
 
 export interface ApiDeps {
   db: Db;
@@ -24,7 +24,9 @@ function routeOf(url: string): string {
 }
 
 export function createApiHandler({ db }: ApiDeps): (req: Request) => Promise<Response> {
-  return async (req) => {
+  // The web app calls /api from the browser. Auth is a bearer token (never a cookie), so any
+  // origin may call; the preflight needs no auth (the gateway lets OPTIONS through).
+  const handle = async (req: Request): Promise<Response> => {
     const methods = ROUTES[routeOf(req.url)];
     if (!methods) return fail(404, 'not_found', 'No such endpoint.');
     const route = methods[req.method];
@@ -36,6 +38,10 @@ export function createApiHandler({ db }: ApiDeps): (req: Request) => Promise<Res
     if (error || !data.user) return fail(401, 'unauthorized', 'Sign in first.');
 
     return route({ db, userId: data.user.id });
+  };
+  return async (req) => {
+    if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_HEADERS });
+    return withCors(await handle(req));
   };
 }
 

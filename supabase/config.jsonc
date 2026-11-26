@@ -282,13 +282,19 @@
       //   "sender_name": "Admin"
       // },
 
-      // Uncomment to customize email template
-      // "template": {
-      //   "invite": {
-      //     "subject": "You have been invited",
-      //     "content_path": "./supabase/templates/invite.html"
-      //   }
-      // },
+      // Sign-in is a 6-digit code, never a link (P0.7). magic_link goes to existing users,
+      // confirmation to an email signing in for the first time. Staging/prod: same text, set in the
+      // dashboard (docs/STAGING.md).
+      "template": {
+        "magic_link": {
+          "subject": "Your Toe to Toe code",
+          "content_path": "./supabase/templates/sign-in-code.html",
+        },
+        "confirmation": {
+          "subject": "Your Toe to Toe code",
+          "content_path": "./supabase/templates/sign-in-code.html",
+        },
+      },
 
       // Uncomment to customize notification email template
       // "notification": {

@@ -10,6 +10,21 @@ export function json(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
+/** CORS for routes the browser calls (/api). Bearer-token auth only, so `*` is safe. */
+export const CORS_HEADERS: Readonly<Record<string, string>> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
+  'Access-Control-Max-Age': '86400',
+};
+
+/** The same response with the CORS headers added. */
+export function withCors(res: Response): Response {
+  const headers = new Headers(res.headers);
+  for (const [name, value] of Object.entries(CORS_HEADERS)) headers.set(name, value);
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+}
+
 /** An error body: { ok: false, error: <code>, message: <human text> }. */
 export function fail(status: number, error: string, message: string): Response {
   return json(status, { ok: false, error, message });

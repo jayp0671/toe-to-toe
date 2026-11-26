@@ -74,3 +74,32 @@ select crew.id, '00000000-0000-4000-8000-000000000010', 'commissioner' from crew
 -- POST /api/sync-key/rotate (only their SHA-256 is stored).
 insert into public.sync_keys (user_id, key_hash) values
   ('00000000-0000-4000-8000-000000000001', encode(extensions.digest('local-dev-sync-key-jay', 'sha256'), 'hex'));
+
+-- Counted days for the /debug page (P0.7): today and yesterday in each Local Crew player's zone,
+-- relative to when the seed runs. Watch wearers show both sources. Yesterday is finalizing until its
+-- noon lock, then locked. Jay last synced 20 minutes before the seed ran.
+insert into public.daily_stats (user_id, local_date, home_tz, steps, sources, status, locked_at)
+select
+  u.id,
+  d.local_date,
+  u.default_tz,
+  (case when d.offset_days = 0 then 4000 else 9000 end) + 371 * n,
+  case when u.dev_note = 'Watch wearer'
+    then array[u.display_name || '''s Apple Watch', u.display_name || '''s iPhone']
+    else array[u.display_name || '''s iPhone'] end,
+  case
+    when d.offset_days = 0 then 'live'
+    when now() >= private.lock_instant(d.local_date, u.default_tz) then 'locked'
+    else 'finalizing'
+  end::public.daily_status,
+  case when d.offset_days = 1 and now() >= private.lock_instant(d.local_date, u.default_tz)
+    then private.lock_instant(d.local_date, u.default_tz) end
+from generate_series(1, 9) n
+join public.users u on u.id = ('00000000-0000-4000-8000-' || lpad(n::text, 12, '0'))::uuid
+cross join lateral (
+  select o as offset_days, (now() at time zone u.default_tz)::date - o as local_date
+  from (values (0), (1)) v (o)
+) d;
+
+update public.sync_keys set last_used_at = now() - interval '20 minutes'
+where user_id = '00000000-0000-4000-8000-000000000001';

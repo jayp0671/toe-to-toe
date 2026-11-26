@@ -119,3 +119,42 @@ apiTest('405 for GET, 404 for an unknown route', async (user) => {
   assertEquals(missing.status, 404);
   await missing.body?.cancel();
 });
+
+// The web app (localhost in dev, Cloudflare Pages in staging) calls /api from the browser, so the
+// preflight must pass and every response must carry the CORS headers. Auth is a bearer token, never
+// a cookie, so any origin is safe.
+Deno.test('OPTIONS preflight answers 204 with CORS headers and no auth', async () => {
+  const res = await api(
+    new Request('http://localhost/api/sync-key/rotate', {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'http://localhost:5173',
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'authorization, apikey, content-type, x-client-info',
+      },
+    }),
+  );
+  assertEquals(res.status, 204);
+  assertEquals(res.headers.get('Access-Control-Allow-Origin'), '*');
+  assertMatch(res.headers.get('Access-Control-Allow-Methods') ?? '', /\bPOST\b/);
+  const allowed = (res.headers.get('Access-Control-Allow-Headers') ?? '').toLowerCase();
+  for (const h of ['authorization', 'apikey', 'content-type', 'x-client-info']) {
+    assert(allowed.includes(h), `Access-Control-Allow-Headers must include ${h}`);
+  }
+  await res.body?.cancel();
+});
+
+apiTest('responses carry CORS headers (200, 401 and 404)', async (user) => {
+  const ok = await rotate(await user.accessToken());
+  assertEquals(ok.status, 200);
+  assertEquals(ok.headers.get('Access-Control-Allow-Origin'), '*');
+  await ok.body?.cancel();
+  const unauthorized = await rotate(undefined);
+  assertEquals(unauthorized.status, 401);
+  assertEquals(unauthorized.headers.get('Access-Control-Allow-Origin'), '*');
+  await unauthorized.body?.cancel();
+  const missing = await api(new Request('http://localhost/api/nope', { method: 'POST' }));
+  assertEquals(missing.status, 404);
+  assertEquals(missing.headers.get('Access-Control-Allow-Origin'), '*');
+  await missing.body?.cancel();
+});
