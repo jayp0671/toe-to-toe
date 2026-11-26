@@ -1,0 +1,48 @@
+{
+  "name": "toe-to-toe",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.15.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "supabase start && pnpm --filter @t2t/web dev",
+    "build": "pnpm --filter @t2t/web build",
+    "db:reset": "supabase db reset",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:engine": "pnpm --filter @t2t/engine test",
+    "test:db": "supabase test db",
+    "test:functions": "deno test --allow-all --config supabase/functions/deno.json supabase/functions",
+    "sim": "node scripts/not-implemented.mjs sim",
+    "e2e": "node scripts/not-implemented.mjs e2e",
+    "smoke": "node scripts/not-implemented.mjs smoke",
+    "sync-report": "node scripts/not-implemented.mjs sync-report",
+    "restore-drill": "node scripts/not-implemented.mjs restore-drill",
+    "gen:routes": "node scripts/not-implemented.mjs gen:routes",
+    "gen:types": "supabase gen types typescript --local > packages/engine/src/database.types.ts",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm test:db && pnpm test:functions",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.11",
+    "eslint": "10.15.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "lefthook": "2.2.4",
+    "prettier": "3.10.1",
+    "supabase": "3.4.0",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.74.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lefthook",
+      "supabase"
+    ]
+  }
+}
